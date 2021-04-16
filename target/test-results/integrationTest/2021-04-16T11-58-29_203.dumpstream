@@ -1,0 +1,4 @@
+# Created at 2021-04-16T11:58:29.425
+Boot Manifest-JAR contains absolute paths in classpath 'D:\jhipster_test_20210415\Category\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+

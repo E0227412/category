@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CategoryResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Category</a> &gt; <a href="index.source.html" class="el_package">com.sample.category.web.rest</a> &gt; <span class="el_source">CategoryResource.java</span></div><h1>CategoryResource.java</h1><pre class="source lang-java linenums">package com.sample.category.web.rest;
+
+import com.sample.category.service.CategoryService;
+import com.sample.category.web.rest.errors.BadRequestAlertException;
+import com.sample.category.service.dto.CategoryDTO;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * REST controller for managing {@link com.sample.category.domain.Category}.
+ */
+@RestController
+@RequestMapping(&quot;/api&quot;)
+public class CategoryResource {
+
+<span class="nc" id="L28">    private final Logger log = LoggerFactory.getLogger(CategoryResource.class);</span>
+
+    private static final String ENTITY_NAME = &quot;categoryCategory&quot;;
+
+    @Value(&quot;${jhipster.clientApp.name}&quot;)
+    private String applicationName;
+
+    private final CategoryService categoryService;
+
+<span class="nc" id="L37">    public CategoryResource(CategoryService categoryService) {</span>
+<span class="nc" id="L38">        this.categoryService = categoryService;</span>
+<span class="nc" id="L39">    }</span>
+
+    /**
+     * {@code POST  /categories} : Create a new category.
+     *
+     * @param categoryDTO the categoryDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new categoryDTO, or with status {@code 400 (Bad Request)} if the category has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping(&quot;/categories&quot;)
+    public ResponseEntity&lt;CategoryDTO&gt; createCategory(@Valid @RequestBody CategoryDTO categoryDTO) throws URISyntaxException {
+<span class="nc" id="L50">        log.debug(&quot;REST request to save Category : {}&quot;, categoryDTO);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (categoryDTO.getId() != null) {</span>
+<span class="nc" id="L52">            throw new BadRequestAlertException(&quot;A new category cannot already have an ID&quot;, ENTITY_NAME, &quot;idexists&quot;);</span>
+        }
+<span class="nc" id="L54">        CategoryDTO result = categoryService.save(categoryDTO);</span>
+<span class="nc" id="L55">        return ResponseEntity.created(new URI(&quot;/api/categories/&quot; + result.getId()))</span>
+<span class="nc" id="L56">            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))</span>
+<span class="nc" id="L57">            .body(result);</span>
+    }
+
+    /**
+     * {@code PUT  /categories} : Updates an existing category.
+     *
+     * @param categoryDTO the categoryDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated categoryDTO,
+     * or with status {@code 400 (Bad Request)} if the categoryDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the categoryDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping(&quot;/categories&quot;)
+    public ResponseEntity&lt;CategoryDTO&gt; updateCategory(@Valid @RequestBody CategoryDTO categoryDTO) throws URISyntaxException {
+<span class="nc" id="L71">        log.debug(&quot;REST request to update Category : {}&quot;, categoryDTO);</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (categoryDTO.getId() == null) {</span>
+<span class="nc" id="L73">            throw new BadRequestAlertException(&quot;Invalid id&quot;, ENTITY_NAME, &quot;idnull&quot;);</span>
+        }
+<span class="nc" id="L75">        CategoryDTO result = categoryService.save(categoryDTO);</span>
+<span class="nc" id="L76">        return ResponseEntity.ok()</span>
+<span class="nc" id="L77">            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, categoryDTO.getId().toString()))</span>
+<span class="nc" id="L78">            .body(result);</span>
+    }
+
+    /**
+     * {@code GET  /categories} : get all the categories.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of categories in body.
+     */
+    @GetMapping(&quot;/categories&quot;)
+    public List&lt;CategoryDTO&gt; getAllCategories() {
+<span class="nc" id="L88">        log.debug(&quot;REST request to get all Categories&quot;);</span>
+<span class="nc" id="L89">        return categoryService.findAll();</span>
+    }
+
+    /**
+     * {@code GET  /categories/:id} : get the &quot;id&quot; category.
+     *
+     * @param id the id of the categoryDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the categoryDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping(&quot;/categories/{id}&quot;)
+    public ResponseEntity&lt;CategoryDTO&gt; getCategory(@PathVariable Long id) {
+<span class="nc" id="L100">        log.debug(&quot;REST request to get Category : {}&quot;, id);</span>
+<span class="nc" id="L101">        Optional&lt;CategoryDTO&gt; categoryDTO = categoryService.findOne(id);</span>
+<span class="nc" id="L102">        return ResponseUtil.wrapOrNotFound(categoryDTO);</span>
+    }
+
+    /**
+     * {@code DELETE  /categories/:id} : delete the &quot;id&quot; category.
+     *
+     * @param id the id of the categoryDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping(&quot;/categories/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteCategory(@PathVariable Long id) {
+<span class="nc" id="L113">        log.debug(&quot;REST request to delete Category : {}&quot;, id);</span>
+<span class="nc" id="L114">        categoryService.delete(id);</span>
+<span class="nc" id="L115">        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
